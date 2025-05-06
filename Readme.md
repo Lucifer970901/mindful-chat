@@ -12,23 +12,45 @@ This project implements a conversational AI chatbot with Retrieval-Augmented Gen
 - **Vector Database Integration**: Efficiently store and search vector embeddings of your knowledge base.
 - **Local LLM Support**: Use Ollama to run open-source LLMs locally.
 
-## Architecture
-
-The project follows a layered architecture:
-
-```mermaid
-graph TD
-    A[Frontend (React)] -->|API Requests| B(Backend FastAPI)
-    B -->|Auth Logic| C(Auth Module)
-    B -->|Chat Logic| D(Chat Module)
-    C -->|User Data| E(PostgreSQL - authUsers DB)
-    D -->|Conversation/Message Data| F(PostgreSQL - chatHistory DB)
-    D -->|Orchestrates RAG| G(LangChain)
-    G -->|Embeddings & LLM Calls| H(Ollama)
-    G -->|Vector Search| I(Pinecone Vector DB)
-    H -->|LLM Model (e.g., Mistral)| J(Local Model Files)
-
-<pre><code>```mermaid graph TD A[Frontend (React)] -->|API Requests| B(Backend FastAPI) B -->|Auth Logic| C(Auth Module) B -->|Chat Logic| D(Chat Module) C -->|User Data| E(PostgreSQL - authUsers DB) D -->|Conversation/Message Data| F(PostgreSQL - chatHistory DB) D -->|Orchestrates RAG| G(LangChain) G -->|Embeddings & LLM Calls| H(Ollama) G -->|Vector Search| I(Pinecone Vector DB) H -->|LLM Model (e.g., Mistral)| J(Local Model Files) ```</code></pre>
++-------------------+
+| Frontend (React)  |
++-------------------+
+          |
+          v
++-------------------+
+|  Backend (FastAPI)|
++-------------------+
+     |          |
+     v          v
++-----------+  +------------+
+| Auth      |  | Chat       |
+| Module    |  | Module     |
++-----------+  +------------+
+     |              |
+     v              v
++----------------+  +------------------------+
+| PostgreSQL     |  | PostgreSQL             |
+| authUsers DB   |  | chatHistory DB         |
++----------------+  +------------------------+
+                        |
+                        v
+                 +--------------+
+                 |  LangChain   |
+                 +--------------+
+                      |
+        +-------------+-------------+
+        |                           |
+        v                           v
++-------------------+     +-----------------------+
+| Ollama (LLM +     |     | Pinecone Vector DB    |
+|  Embeddings)      |     +-----------------------+
++-------------------+
+        |
+        v
++------------------------+
+| Local Model Files      |
+| (e.g., mistral)        |
++------------------------+
 
 ## Explanation of Workflow
 
