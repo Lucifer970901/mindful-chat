@@ -12,6 +12,8 @@ This project implements a conversational AI chatbot with Retrieval-Augmented Gen
 - **Vector Database Integration**: Efficiently store and search vector embeddings of your knowledge base.
 - **Local LLM Support**: Use Ollama to run open-source LLMs locally.
 
+## Architecture
+
 +-------------------+
 | Frontend (React)  |
 +-------------------+
