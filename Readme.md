@@ -1,6 +1,23 @@
-RAG Chatbot with LangChain, Ollama, Pinecone, FastAPI, and React
+# RAG Chatbot with LangChain, Ollama, Pinecone, FastAPI, and React
 
-This project implements a conversational AI chatbot with Retrieval-Augmented Generation (RAG), allowing it to answer questions based on a custom knowledge base. It uses a modern tech stack including LangChain for orchestration, Ollama for the Large Language Model (LLM) and embeddings, Pinecone for vector storage, FastAPI for the backend API, and React for the frontend user interface.FeaturesConversational AI: Engage in natural language conversations.Retrieval-Augmented Generation (RAG): Utilize a custom knowledge base (stored in Pinecone) to provide informed responses.Authentication: Secure user registration and login using JWT tokens.Chat History: Store and retrieve conversation history per user.Scalable Architecture: Modular design with separate backend and frontend components.Vector Database Integration: Efficiently store and search vector embeddings of your knowledge base.Local LLM Support: Use Ollama to run open-source LLMs locally.ArchitectureThe project follows a layered architecture:Frontend (React): A user interface for interacting with the chatbot. Handles user input, displays messages, manages conversation flow, and interacts with the backend API.Backend (FastAPI): A Python API that handles user authentication, processes chat requests, orchestrates the RAG pipeline, and interacts with the databases and LLM.RAG Pipeline (LangChain): Lives within the backend. It's responsible for:Receiving user queries.Generating embeddings for the query (using Ollama Embeddings).Searching the vector database (Pinecone) for relevant documents.Fetching the full content of the retrieved documents.Constructing a prompt for the LLM, including the user query, relevant documents, and conversation history.Sending the prompt to the LLM (Ollama).Receiving and formatting the LLM's response.Large Language Model (Ollama): Runs locally (or on a server). Provides the core language generation capabilities.Vector Database (Pinecone): A cloud-based vector database for storing and searching vector embeddings of your knowledge base documents.Relational Database (PostgreSQL): Stores user authentication data (authUsers database) and chat conversation history (chatHistory database).Here is a conceptual diagram illustrating the architecture:graph TD
+This project implements a conversational AI chatbot with Retrieval-Augmented Generation (RAG), allowing it to answer questions based on a custom knowledge base. It uses a modern tech stack including LangChain for orchestration, Ollama for the Large Language Model (LLM) and embeddings, Pinecone for vector storage, FastAPI for the backend API, and React for the frontend user interface.
+
+## Features
+
+- **Conversational AI**: Engage in natural language conversations.
+- **Retrieval-Augmented Generation (RAG)**: Utilize a custom knowledge base (stored in Pinecone) to provide informed responses.
+- **Authentication**: Secure user registration and login using JWT tokens.
+- **Chat History**: Store and retrieve conversation history per user.
+- **Scalable Architecture**: Modular design with separate backend and frontend components.
+- **Vector Database Integration**: Efficiently store and search vector embeddings of your knowledge base.
+- **Local LLM Support**: Use Ollama to run open-source LLMs locally.
+
+## Architecture
+
+The project follows a layered architecture:
+
+```mermaid
+graph TD
     A[Frontend (React)] -->|API Requests| B(Backend FastAPI)
     B -->|Auth Logic| C(Auth Module)
     B -->|Chat Logic| D(Chat Module)
@@ -10,26 +27,160 @@ This project implements a conversational AI chatbot with Retrieval-Augmented Gen
     G -->|Embeddings & LLM Calls| H(Ollama)
     G -->|Vector Search| I(Pinecone Vector DB)
     H -->|LLM Model (e.g., Mistral)| J(Local Model Files)
-Explanation:The Frontend sends requests to the Backend API.The Backend routes requests to either the Auth Module (for registration/login) or the Chat Module (for chat interactions).The Auth Module interacts with the authUsers database to manage user credentials.The Chat Module interacts with the chatHistory database to store and retrieve conversations.For chat requests, the Chat Module uses LangChain to execute the RAG pipeline.LangChain utilizes Ollama for generating embeddings and interacting with the LLM.LangChain queries Pinecone to find relevant documents based on the user's message embeddings.Ollama loads the LLM model from local files.Setup and InstallationFollow these steps to set up and run the project locally.PrerequisitesPython 3.8+Node.js and npm or yarnDocker (optional, for running PostgreSQL and Ollama easily)PostgreSQL database serverOllama installed and running with the mistral model pulled (ollama pull mistral)A Pinecone account and API key1. Clone the Repositorygit clone <repository_url>
+```
+
+## Explanation of Workflow
+
+1. The **Frontend** sends requests to the **Backend API**.
+2. The **Backend** routes requests to:
+   - The **Auth Module** for registration/login.
+   - The **Chat Module** for chat interactions.
+3. The **Auth Module**:
+   - Manages user credentials.
+   - Interacts with the `authUsers` PostgreSQL database.
+4. The **Chat Module**:
+   - Manages conversations.
+   - Interacts with the `chatHistory` PostgreSQL database.
+   - Orchestrates the **RAG Pipeline** via **LangChain**.
+5. **LangChain** handles:
+   - Embedding the user's query with `OllamaEmbeddings(model="nomic-embed-text")`.
+   - Searching for relevant documents in **Pinecone**.
+   - Fetching and compiling document chunks.
+   - Constructing a prompt combining the query, context, and history.
+   - Sending the prompt to the **LLM** via **Ollama** and formatting the response.
+6. **Ollama**:
+   - Runs locally and loads models (e.g., `mistral`).
+   - Powers both embeddings and language generation.
+7. **Pinecone**:
+   - Serves as the vector database.
+   - Stores and retrieves embeddings of document chunks efficiently.
+
+## Setup and Installation
+
+### Prerequisites
+
+- Python 3.8+
+- Node.js and npm or yarn
+- Docker (optional, for PostgreSQL and Ollama)
+- PostgreSQL server
+- Ollama with `mistral` model (`ollama pull mistral`)
+- Pinecone account and API key
+
+### 1. Clone the Repository
+
+```bash
+git clone <repository_url>
 cd <repository_name>
-2. Backend SetupNavigate to the backend directory (assuming it's named backend or similar).cd backend # Or your backend directory name
-Create a Python virtual environment and activate it:python -m venv venv
-# On Windows
-.\venv\Scripts\activate
-# On macOS/Linux
-source venv/bin/activate
-Install backend dependencies:pip install -r requirements.txt
-Create a .env file in the backend directory and add your database and Pinecone configurations:DB_USER=your_postgres_user
+```
+
+### 2. Backend Setup
+
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # or .\venv\Scripts\activate on Windows
+pip install -r requirements.txt
+```
+
+Create a `.env` file:
+
+```
+DB_USER=your_postgres_user
 DB_PASSWORD=your_postgres_password
 DB_HOST=localhost
 DB_PORT=5432
 PINECONE_API_KEY=your_pinecone_api_key
 PINECONE_INDEX_NAME=your_pinecone_index_name
-SECRET_KEY=a_strong_random_secret_key # Used for JWT token signing
-Replace the placeholder values with your actual credentials.Initialize the databases:python database.py
-Ensure this script runs without errors. It will create the authUsers and chatHistory databases and their tables if they don't exist. Note: If you encounter errors related to existing tables or columns, you might need to manually drop and recreate the tables in your PostgreSQL database.3. Frontend SetupNavigate to the frontend directory (assuming it's named frontend or similar).cd ../frontend # Or your frontend directory name
-Install frontend dependencies:npm install # or yarn install
-The frontend is configured to connect to the backend at http://localhost:8000/api. Ensure this matches your backend's configuration.4. Ollama SetupMake sure Ollama is installed and running on your system. Pull the mistral model:ollama pull mistral
-Ensure the Ollama server is accessible from your backend at http://localhost:11434 (or the address specified in your backend code).5. Pinecone SetupEnsure you have created an index in your Pinecone account with the name specified in your .env file (PINECONE_INDEX_NAME). The index should be configured to use the embedding dimension of the nomic-embed-text model (which is 768).You will need a separate script to load your knowledge base documents into this Pinecone index. This script would typically involve:Loading documents (e.g., from files).Splitting documents into smaller chunks.Generating embeddings for each chunk using OllamaEmbeddings(model="nomic-embed-text").Uploading the chunks and their embeddings to your Pinecone index using PineconeVectorStore.from_documents or similar.This document does not include the knowledge base loading script, as it depends heavily on your specific data sources.Running the ApplicationStart the Backend:Navigate to the backend directory and run:uvicorn api_with_chathistory.py:app --reload --host 0.0.0.0 --port 8000
-The backend should start and listen on http://0.0.0.0:8000.Start the Frontend:Navigate to the frontend directory and run:npm start # or yarn start
-The frontend application should open in your browser, typically at http://localhost:8080 (or the port configured in your frontend's package.json).API EndpointsThe backend provides the following API endpoints (all prefixed with /api):POST /api/register: Register a new user.POST /api/token: Authenticate a user and get a JWT token.POST /api/chat: Send a message to the chatbot and get a response (requires authentication).GET /api/chat/history: Get the chat history for the authenticated user.GET /api/conversations: Get a list of conversations for the authenticated user.Refer to the backend code (api_with_chathistory.py) for detailed request and response models.ContributingContributions are welcome! Please follow standard GitHub practices:Fork the repository.Create a new branch for your feature or bug fix.Make your changes and commit them with clear messages.Push your branch to your fork.Create a pull request to the main repository.License[Specify your project's license here, e.g., MIT, Apache 2.0]
+SECRET_KEY=a_strong_random_secret_key
+```
+
+Initialize the database:
+
+```bash
+python database.py
+```
+
+### 3. Frontend Setup
+
+```bash
+cd ../frontend
+npm install
+```
+
+Ensure backend URL in frontend config matches: `http://localhost:8000/api`.
+
+### 4. Ollama Setup
+
+```bash
+ollama pull mistral
+```
+
+Ensure Ollama is accessible at `http://localhost:11434`.
+
+### 5. Pinecone Setup
+
+Ensure the index is created with `768` dimensions for `nomic-embed-text`.
+
+## Knowledge Base Ingestion Example
+
+Upload documents to Pinecone using:
+
+```python
+PineconeVectorStore.from_documents(docs, embedding=embeddings, index_name="your_index")
+```
+
+> This ingestion process is data-dependent and should be customized based on your document types and domain.
+
+## Technologies Used
+
+| Component        | Technology                          |
+|------------------|--------------------------------------|
+| **LLM**          | Ollama with Mistral model           |
+| **Embeddings**   | `nomic-embed-text` via Ollama       |
+| **Orchestration**| LangChain                           |
+| **Vector DB**    | Pinecone                            |
+| **API Backend**  | FastAPI                             |
+| **Frontend**     | React                               |
+| **Auth & History**| PostgreSQL (via psycopg2/sqlalchemy) |
+
+## Troubleshooting
+
+### Ollama not responding?
+
+- Make sure the Ollama server is running:
+
+```bash
+ollama run mistral
+# or
+ollama serve
+```
+
+- Verify it's accessible at: [http://localhost:11434](http://localhost:11434)
+
+### Vector index mismatch?
+
+- Ensure the Pinecone index is configured to use `768` dimensions (required by `nomic-embed-text`).
+
+### Chat errors on the frontend?
+
+- Confirm the backend URL is correctly set in your React app:
+
+```env
+VITE_API_BASE_URL=http://localhost:8000/api
+```
+
+## Future Improvements
+
+- [ ] Add role-based access control
+- [ ] Add a UI for uploading and managing documents
+- [ ] Support additional LLMs through Ollama or LangChain
+- [ ] Implement persistent conversation threads with search
+- [ ] Enable one-command deployment with Docker Compose
+
+## License
+
+[Your License Name Here]
+
+---
+
+Made with ❤️ using open-source technologies.
