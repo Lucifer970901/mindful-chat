@@ -27,7 +27,7 @@ graph TD
     G -->|Embeddings & LLM Calls| H(Ollama)
     G -->|Vector Search| I(Pinecone Vector DB)
     H -->|LLM Model (e.g., Mistral)| J(Local Model Files)
-```
+
 
 ## Explanation of Workflow
 
