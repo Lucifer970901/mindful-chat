@@ -28,6 +28,7 @@ graph TD
     G -->|Vector Search| I(Pinecone Vector DB)
     H -->|LLM Model (e.g., Mistral)| J(Local Model Files)
 
+<pre><code>```mermaid graph TD A[Frontend (React)] -->|API Requests| B(Backend FastAPI) B -->|Auth Logic| C(Auth Module) B -->|Chat Logic| D(Chat Module) C -->|User Data| E(PostgreSQL - authUsers DB) D -->|Conversation/Message Data| F(PostgreSQL - chatHistory DB) D -->|Orchestrates RAG| G(LangChain) G -->|Embeddings & LLM Calls| H(Ollama) G -->|Vector Search| I(Pinecone Vector DB) H -->|LLM Model (e.g., Mistral)| J(Local Model Files) ```</code></pre>
 
 ## Explanation of Workflow
 
