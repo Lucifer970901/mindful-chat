@@ -12,7 +12,47 @@ This project implements a conversational AI chatbot with Retrieval-Augmented Gen
 - **Vector Database Integration**: Efficiently store and search vector embeddings of your knowledge base.
 - **Local LLM Support**: Use Ollama to run open-source LLMs locally.
 
-<pre><code>## Architecture ``` +-------------------+ | Frontend (React) | +-------------------+ | v +-------------------+ | Backend (FastAPI) | +-------------------+ | | v v +-----------+ +------------+ | Auth | | Chat | | Module | | Module | +-----------+ +------------+ | | v v +----------------+ +------------------------+ | PostgreSQL | | PostgreSQL | | authUsers DB | | chatHistory DB | +----------------+ +------------------------+ | v +--------------+ | LangChain | +--------------+ | +-------------+-------------+ | | v v +-------------------+ +-----------------------+ | Ollama (LLM + | | Pinecone Vector DB | | Embeddings) | +-----------------------+ +-------------------+ | v +------------------------+ | Local Model Files | | (e.g., mistral) | +------------------------+ ``` </code></pre>
+## Architecture
++-------------------+
+| Frontend (React) |
++-------------------+
+|
+v
++-------------------+
+| Backend (FastAPI) |
++-------------------+
+| |
+v v
++-----------+ +------------+
+| Auth | | Chat |
+| Module | | Module |
++-----------+ +------------+
+| |
+v v
++----------------+ +------------------------+
+| PostgreSQL | | PostgreSQL |
+| authUsers DB | | chatHistory DB |
++----------------+ +------------------------+
+|
+v
++--------------+
+| LangChain |
++--------------+
+|
++-------------+-------------+
+| |
+v v
++-------------------+ +-----------------------+
+| Ollama (LLM + | | Pinecone Vector DB |
+| Embeddings) | +-----------------------+
++-------------------+
+|
+v
++------------------------+
+| Local Model Files |
+| (e.g., mistral) |
++------------------------+
+
 
 ## Explanation of Workflow
 
