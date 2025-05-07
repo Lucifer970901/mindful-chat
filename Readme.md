@@ -13,45 +13,10 @@ This project implements a conversational AI chatbot with Retrieval-Augmented Gen
 - **Local LLM Support**: Use Ollama to run open-source LLMs locally.
 
 ## Architecture
-+-------------------+
-| Frontend (React) |
-+-------------------+
-|
-v
-+-------------------+
-| Backend (FastAPI) |
-+-------------------+
-| |
-v v
-+-----------+ +------------+
-| Auth | | Chat |
-| Module | | Module |
-+-----------+ +------------+
-| |
-v v
-+----------------+ +------------------------+
-| PostgreSQL | | PostgreSQL |
-| authUsers DB | | chatHistory DB |
-+----------------+ +------------------------+
-|
-v
-+--------------+
-| LangChain |
-+--------------+
-|
-+-------------+-------------+
-| |
-v v
-+-------------------+ +-----------------------+
-| Ollama (LLM + | | Pinecone Vector DB |
-| Embeddings) | +-----------------------+
-+-------------------+
-|
-v
-+------------------------+
-| Local Model Files |
-| (e.g., mistral) |
-+------------------------+
+
+Here is an overview of the system architecture:
+
+![Mindful Chat Architecture Diagram](./architecture.jpg)
 
 
 ## Explanation of Workflow
